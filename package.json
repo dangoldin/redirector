@@ -1,0 +1,8 @@
+{
+  "name": "redirector",
+  "description": "Just a way to redirect URLs using hosts files",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "~4.11.1"
+  }
+}
