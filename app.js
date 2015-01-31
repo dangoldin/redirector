@@ -1,14 +1,24 @@
 var application_root = __dirname;
 
-var express = require('express');
+var express = require('express'),
+    fs = require('fs');
 
 var app = express();
 
-var redir_map = {
-  'ib.3lift.net': 'google.com',
-  'ib.3lift.com': 'dan.triplelift.net:8007',
-  'www.google.com' : 'www.yahoo.com'
-};
+setInterval(function () {
+  var tempMappings = fs.readFileSync('./mappings.json');
+  try {
+    tempMappings = JSON.parse(tempMappings);
+  } catch (err) {
+    console.log('Failed to read mappings');
+    console.log(err);
+    tempMappings = {};
+  }
+  mappings = tempMappings;
+
+  console.log('Loading mappings');
+  console.dir(mappings);
+}, 3000);
 
 app.get('*', function(req, res) {
   var urlInfo = { protocol: (req.connection.encrypted ? 'https': 'http'),
@@ -16,7 +26,7 @@ app.get('*', function(req, res) {
                   url: req.url
                 },
       url = urlInfo.protocol + '://' + urlInfo.host + urlInfo.url,
-      newHost = redir_map[urlInfo.host]
+      newHost = mappings[urlInfo.host]
       newUrl = urlInfo.protocol + '://' + newHost + urlInfo.url;
   console.log(url + '=>' + newUrl);
   res.redirect(newUrl || url);
